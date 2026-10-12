@@ -1,0 +1,42 @@
+[package]
+name = "innertube"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Savvy InnerTube client wrapper"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+reqwest = { workspace = true }
+urlencoding = { workspace = true }
+
+innertube-rs = "0.9"
+
+[[bin]]
+name = "smoke"
+path = "src/bin/smoke.rs"
+
+[[bin]]
+name = "probe_budget"
+path = "src/bin/probe_budget.rs"
+
+[[bin]]
+name = "probe_throttle"
+path = "src/bin/probe_throttle.rs"
+
+[[bin]]
+name = "probe_head"
+path = "src/bin/probe_head.rs"
+
+[[bin]]
+name = "probe_retry"
+path = "src/bin/probe_retry.rs"
+
+[[bin]]
+name = "probe_visionos"
+path = "src/bin/probe_visionos.rs"

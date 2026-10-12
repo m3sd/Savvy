@@ -1,0 +1,52 @@
+[package]
+name = "savvy-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Savvy - native desktop YouTube client"
+rust-version = "1.80"
+# `audio_probe` is a diagnostic binary; without this `cargo run` is ambiguous
+# and `tauri dev` cannot pick a target.
+default-run = "savvy-app"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+futures-util = { workspace = true }
+rand = { workspace = true }
+reqwest = { workspace = true }
+urlencoding = { workspace = true }
+rusqlite = { workspace = true }
+hyper = { workspace = true }
+hyper-util = { workspace = true }
+http-body-util = { workspace = true }
+bytes = "1"
+chrono = { version = "0.4", features = ["serde"] }
+
+tauri = { version = "2", features = ["tray-icon", "protocol-asset", "macos-private-api", "image-png"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-window-state = "2"
+
+innertube = { path = "../crates/innertube" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_System_Com",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+] }

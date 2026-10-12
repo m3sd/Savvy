@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>player bridge</title>
+  </head>
+  <body>
+    <!--
+      Trampoline page for the offscreen player bridge.
+
+      This document exists purely so that Tauri injects the bridge script into a
+      page that is not navigating yet. Loading `youtube.com` directly in the same
+      call as the injection raced, and losing that race meant the script never
+      existed on the page - every command from Rust then failed silently.
+
+      The Rust side watches for this page's load and calls `location.replace` to
+      move on to YouTube, so the injected script survives the navigation.
+    -->
+    <script>
+      // Belt and braces. If the injected script somehow did not run, navigate
+      // anyway: Rust is waiting on a load event for a YouTube URL, and arriving
+      // there unbridged is more diagnosable than stalling on this page.
+      setTimeout(function () {
+        if (!window.__savvyPlayer) {
+          window.location.replace("https://www.youtube.com/");
+        }
+      }, 1500);
+    </script>
+  </body>
+</html>

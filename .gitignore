@@ -1,0 +1,29 @@
+/target
+**/*.rs.bk
+
+# Node
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# SvelteKit / Vite
+ui/build/
+ui/.svelte-kit/
+ui/dist/
+ui/.vite/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local data
+*.local

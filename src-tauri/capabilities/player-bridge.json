@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "player-bridge",
+  "description": "Offscreen window that plays youtube.com so InnerTube's bot check is answered by a real browser. It runs YouTube's own JavaScript, so its permissions are kept to the single command it needs - see player_bridge_report.",
+  "windows": ["player-bridge"],
+  "permissions": [
+    "core:default",
+    "core:webview:allow-internal-toggle-devtools"
+  ],
+  "remote": {
+    "urls": ["https://www.youtube.com/*"]
+  }
+}

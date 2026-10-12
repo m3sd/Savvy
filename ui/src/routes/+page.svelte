@@ -1,0 +1,106 @@
+<script lang="ts">
+    import { HugeiconsIcon } from '@hugeicons/svelte';
+    import { Home01Icon, Search01Icon, PlayCircleIcon } from '@hugeicons/core-free-icons';
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+    import { api, preResolve, type HistoryRow } from '$lib/api';
+    import { HISTORY_CHANGED } from '$lib/contextmenu.svelte';
+
+    let recent = $state<HistoryRow[]>([]);
+    let loading = $state(true);
+
+    async function reloadRecent() {
+        try {
+            recent = await api.historyList(8);
+        } finally {
+            loading = false;
+        }
+    }
+
+    onMount(() => {
+        void reloadRecent();
+        window.addEventListener(HISTORY_CHANGED, reloadRecent);
+        return () => window.removeEventListener(HISTORY_CHANGED, reloadRecent);
+    });
+
+    function play(videoId: string) {
+        goto(`/watch/${videoId}`);
+    }
+</script>
+
+<div class="flex flex-col gap-6 p-8">
+    <div class="flex items-center gap-3">
+        <HugeiconsIcon icon={Home01Icon} class="h-6 w-6 text-primary" strokeWidth={2} />
+        <h1 class="font-heading text-3xl font-bold tracking-tight">Home</h1>
+    </div>
+
+    <a
+        href="/search"
+        class="flex items-center gap-3 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/40"
+    >
+        <HugeiconsIcon
+            icon={Search01Icon}
+            class="h-5 w-5 text-muted-foreground"
+            strokeWidth={2}
+        />
+        <span class="text-sm text-muted-foreground">Search YouTube…</span>
+        <kbd
+            class="ml-auto rounded border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+            >Ctrl K</kbd
+        >
+    </a>
+
+    <section class="flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+            <h2 class="font-heading text-sm font-semibold text-muted-foreground">Recent</h2>
+            <a href="/history" class="text-xs text-primary hover:underline">See all</a>
+        </div>
+
+        {#if loading}
+            <p class="text-sm text-muted-foreground">Loading…</p>
+        {:else if recent.length === 0}
+            <p class="text-sm text-muted-foreground">
+                Nothing played yet. Search for a video to get started.
+            </p>
+        {:else}
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {#each recent as h}
+                    <button
+                        type="button"
+                        data-ctx="card"
+                        data-video-id={h.videoId}
+                        data-title={h.title}
+                        data-author={h.author}
+                        data-thumbnail={h.thumbnail}
+                        data-duration={h.durationSeconds}
+                        data-channel-id={h.channelId}
+                        onclick={() => play(h.videoId)}
+                        onmouseenter={() => preResolve(h.videoId)}
+                        onfocus={() => preResolve(h.videoId)}
+                        class="group flex flex-col gap-2 overflow-hidden rounded-lg border bg-card text-left transition-colors hover:bg-muted/40"
+                    >
+                        <div class="relative aspect-video w-full overflow-hidden bg-muted">
+                            {#if h.thumbnail}
+                                <img
+                                    src={h.thumbnail}
+                                    alt=""
+                                    class="h-full w-full object-cover"
+                                    loading="lazy"
+                                />
+                            {/if}
+                            <HugeiconsIcon
+                                icon={PlayCircleIcon}
+                                class="absolute top-1/2 left-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                                strokeWidth={2}
+                            />
+                        </div>
+                        <div class="flex flex-col gap-1 p-3">
+                            <p class="line-clamp-2 text-sm font-medium">{h.title}</p>
+                            <p class="text-xs text-muted-foreground">{h.author}</p>
+                        </div>
+                    </button>
+                {/each}
+            </div>
+        {/if}
+    </section>
+</div>
