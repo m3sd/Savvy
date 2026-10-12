@@ -1896,8 +1896,8 @@
     {/if}
 
     {#if info}
-        <div class="grid grid-cols-1 gap-6 {theater || related.length === 0 ? 'lg:grid-cols-1' : 'lg:grid-cols-[2fr_1fr]'}">
-            <div class="flex flex-col gap-3">
+        <div class="grid grid-cols-1 gap-6 {theater || related.length === 0 ? 'lg:grid-cols-1' : 'lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]'}">
+            <div class="flex min-w-0 flex-col gap-3">
                 <div
                     class="player-frame relative overflow-hidden rounded-xl bg-black"
                     bind:this={playerFrame}
@@ -2500,7 +2500,7 @@
             </div>
 
             {#if !theater && related.length > 0}
-            <aside class="flex flex-col gap-2">
+            <aside class="flex min-w-0 flex-col gap-2">
                 <h2 class="font-heading text-sm font-semibold text-muted-foreground">Related</h2>
                 {@render relatedCards(true)}
             </aside>
